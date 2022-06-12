@@ -10,6 +10,6 @@
                 }
             } 
     	 swap(arr[k], arr[l]);
-   	    reverse(arr.begin() + k + 1, arr.end());
+   	    reverse(arr.begin() + k + 1, arr.end());   //or sort
         }
         return arr;

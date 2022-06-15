@@ -1,11 +1,14 @@
- int minJumps(int arr[], int n){
-      int ans=0,l=0,r=0;
-      while(r<n-1){
-      int far=0;
-      for(int i=l;i<r+1;i++){
-       far=max(far,i+arr[i]);
-      }l=r+1;
-       r=far;
-       ans++;
-    }   return ans;}
- //tle error
+      int i;
+      int end=0;
+      int maxreach=0;
+      int count=0;
+      for(i=0;i<n-1;i++)
+      {maxreach= max(maxreach,i+arr[i]);
+          if(i==end)
+          {count++;end=maxreach;
+          }
+       }
+      if(end<n-1)
+       return -1;
+      else
+       return count;

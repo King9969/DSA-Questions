@@ -1,11 +1,7 @@
-vector<int> v;
-     void lnr(Node* root){
-         if(root==NULL){return;}
-        lnr(root->left);
-         v.push_back(root->data);
-        lnr(root->right);
-     }
-    vector<int> inOrder(Node* root) {
-       lnr(root);
-       return v;
-    }
+if(root!=NULL)
+        {
+            inOrder(root->left);
+            v.push_back(root->data);
+            inOrder(root->right);         
+        }
+        return v;

@@ -7,3 +7,5 @@
            else ans++;
            }
     }
+    //1 liner
+ return log2(n&~(n-1))+1;

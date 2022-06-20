@@ -1,18 +1,15 @@
-int can(int arr[],int n,int m ,int mid){
+   int can(int arr[],int n,int m ,int mid){
        int student=1,page=0;
        for(int i=0;i<n;i++){
-       if(page+arr[i]<=mid)page+=arr[i];
-       else{
-           student++;
-           if(student>m||arr[i]>mid)return false;
-       page=arr[i];}
-   }return true;
+          page=page+arr[i];
+       if(page>mid){
+            student++;
+            page=arr[i];}
+   }if(student>m)return false;
+        return true;
    }
-    int findPages(int A[], int N, int M) 
-    {
-    int start=0;
-    int end=0;
-    int ans=-1;
+    int findPages(int A[], int N, int M) {
+    int start=A[N-1],end=0,ans=-1;
     for(int i=0;i<N;i++)end+=A[i];
     while(start<=end){
         int mid=(start+end)/2;

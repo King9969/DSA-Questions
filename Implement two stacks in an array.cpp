@@ -1,13 +1,11 @@
 void twoStacks :: push1(int x)
 {
-top1++;
-arr[top1]=x;
+arr[++top1]=x;
 }
    
 void twoStacks ::push2(int x)
 {
-top2--;
-arr[top2]=x;
+arr[--top2]=x;
 }
    
 //Function to remove an element from top of the stack1.

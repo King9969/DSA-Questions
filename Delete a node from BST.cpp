@@ -2,15 +2,8 @@ Node *deleteNode(Node *root, int X) {
     if(!root)return NULL;
     if(root->data==X){
         if(!root->left&&!root->right){delete root; return NULL;}
-        if(!root->left&&root->right){
-            Node*temp = root->right;
-           delete root;
-           return temp;
-        }
-        if(root->left&&!root->right){
-            Node*temp = root->left;
-           delete root;
-           return temp;}
+        if(!root->left&&root->right)return root->right;
+        if(root->left&&!root->right)return root->left;
         if(root->left&&root->right){
             int mn = INT_MAX;
            Node*temp = root->right;

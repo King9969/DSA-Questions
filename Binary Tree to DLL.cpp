@@ -1,15 +1,12 @@
-Node* prev=NULL,*head=NULL;
-    void in(Node* root){
-        if(!root)return;
-        in(root->left);
+    Node* prev=NULL,*head=NULL;
+    Node * bToDLL(Node *root)
+    {
+         if(!root)return NULL;
+        bToDLL(root->left);
         root->left=prev;
         if(!prev)head=root;
         else prev->right=root;
         prev=root;
-        in(root->right);
-    }
-    Node * bToDLL(Node *root)
-    {
-        in(root);
+        bToDLL(root->right);
         return head;
     }

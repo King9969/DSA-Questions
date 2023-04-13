@@ -1,0 +1,365 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_NODES 1000
+
+// Function to find the node with the minimum distance that has not been visited
+int find_min_distance(int dist[], int visited[], int n) {
+    int min_dist = INT_MAX;
+    int min_node = -1;
+    for (int i = 0; i < n; i++) {
+        if (!visited[i] && dist[i] < min_dist) {
+            min_dist = dist[i];
+            min_node = i;
+        }
+    }
+    return min_node;
+}
+
+// Function to find the shortest paths from a source node to all other nodes in a graph using Dijkstra's algorithm
+void dijkstra(int graph[][MAX_NODES], int n, int source) {
+    int dist[MAX_NODES];    // Array to store the minimum distances from the source node
+    int visited[MAX_NODES]; // Array to store the visited status of each node
+    
+    // Initialize the arrays
+    for (int i = 0; i < n; i++) {
+        dist[i] = INT_MAX;
+        visited[i] = 0;
+    }
+    dist[source] = 0;
+    
+    // Loop over all nodes
+    for (int i = 0; i < n; i++) {
+        // Find the node with the minimum distance that has not been visited
+        int current_node = find_min_distance(dist, visited, n);
+        if (current_node == -1) {
+            break;  // All nodes have been visited
+        }
+        visited[current_node] = 1;
+        
+        // Update the distances to the neighboring nodes
+        for (int j = 0; j < n; j++) {
+            if (graph[current_node][j] != -1 && !visited[j]) {
+                int new_dist = dist[current_node] + graph[current_node][j];
+                if (new_dist < dist[j]) {
+                    dist[j] = new_dist;
+                }
+            }
+        }
+    }
+    
+    // Print the minimum distances from the source node
+    for (int i = 0; i < n; i++) {
+        printf("Distance from node %d to node %d is %d\n", source, i, dist[i]);
+    }
+}
+
+// Example usage
+int main() {
+    int n = 5;  // Number of nodes
+    int graph[MAX_NODES][MAX_NODES] = {
+        {-1,  2,  4, -1, -1},
+        { 2, -1,  1,  3, -1},
+        { 4,  1, -1,  2,  5},
+        {-1,  3,  2, -1,  1},
+        {-1, -1,  5,  1, -1}
+    };
+    int source = 0;  // Source node
+    dijkstra(graph, n, source);
+    return 0;
+}
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_NODES 1000
+
+// Function to find the transitive closure of a graph using the Warshall algorithm
+void warshall(int graph[][MAX_NODES], int n) {
+    int closure[MAX_NODES][MAX_NODES]; // Array to store the transitive closure
+    
+    // Initialize the closure
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            closure[i][j] = graph[i][j];
+        }
+    }
+    
+    // Loop over all intermediate nodes
+    for (int k = 0; k < n; k++) {
+        // Loop over all pairs of nodes
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                // Update the closure if there is a path from i to k and from k to j
+                if (closure[i][k] && closure[k][j]) {
+                    closure[i][j] = 1;
+                }
+            }
+        }
+    }
+    
+    // Print the transitive closure
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", closure[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Example usage
+int main() {
+    int n = 4;  // Number of nodes
+    int graph[MAX_NODES][MAX_NODES] = {
+        {0, 0, 0, 1},
+        {1, 0, 1, 0},
+        {0, 0, 0, 0},
+        {0, 1, 0, 0}
+    };
+    warshall(graph, n);
+    return 0;
+}
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_NODES 1000
+
+// Function to find the minimum of two integers
+int min(int a, int b) {
+    return a < b ? a : b;
+}
+
+// Function to find the shortest paths between all pairs of nodes in a graph using the Floyd-Warshall algorithm
+void floyd_warshall(int graph[][MAX_NODES], int n) {
+    int dist[MAX_NODES][MAX_NODES]; // Array to store the minimum distances between all pairs of nodes
+    
+    // Initialize the distances
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            dist[i][j] = graph[i][j];
+        }
+    }
+    
+    // Loop over all intermediate nodes
+    for (int k = 0; k < n; k++) {
+        // Loop over all pairs of nodes
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                // Update the distance if the path through node k is shorter
+                if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX) {
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+    }
+    
+    // Print the minimum distances between all pairs of nodes
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("Minimum distance from node %d to node %d is %d\n", i, j, dist[i][j]);
+        }
+    }
+}
+
+// Example usage
+int main() {
+    int n = 4;  // Number of nodes
+    int graph[MAX_NODES][MAX_NODES] = {
+        {0, 3, 6, 15},
+        {INT_MAX, 0, -2, INT_MAX},
+        {INT_MAX, INT_MAX, 0, 2},
+        {1, INT_MAX, INT_MAX, 0}
+    };
+    floyd_warshall(graph, n);
+    return 0;
+}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_NODES 1000
+
+// Function to perform topological sort
+void topological_sort(int graph[][MAX_NODES], int n) {
+    int in_degree[MAX_NODES] = {0};  // Array to store the in-degree of each node
+    int visited[MAX_NODES] = {0};   // Array to store the visited status of each node
+    
+    // Calculate the in-degree of each node
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (graph[i][j] != 0) {
+                in_degree[j]++;
+            }
+        }
+    }
+    
+    // Loop over all nodes
+    for (int i = 0; i < n; i++) {
+        // Find a node with in-degree 0 that has not been visited
+        int current_node = -1;
+        for (int j = 0; j < n; j++) {
+            if (in_degree[j] == 0 && !visited[j]) {
+                current_node = j;
+                visited[j] = 1;
+                break;
+            }
+        }
+        
+        if (current_node == -1) {
+            printf("Error: Graph contains a cycle\n");
+            return;
+        }
+        
+        // Remove the current node and update the in-degree of its neighbors
+        printf("%d ", current_node);
+        for (int j = 0; j < n; j++) {
+            if (graph[current_node][j] != 0) {
+                in_degree[j]--;
+            }
+        }
+    }
+}
+
+// Example usage
+int main() {
+    int n = 6;  // Number of nodes
+    int graph[MAX_NODES][MAX_NODES] = {
+        {0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0},
+        {1, 1, 0, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0},
+        {0, 1, 1, 0, 0, 0},
+        {0, 0, 1, 1, 0, 0}
+    };
+    topological_sort(graph, n);
+    return 0;
+}
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_NODES 1000
+
+void prim(int graph[][MAX_NODES], int n) {
+    int visited[MAX_NODES];
+    int dist[MAX_NODES];
+    int parent[MAX_NODES];
+
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+        dist[i] = INT_MAX;
+        parent[i] = -1;
+    }
+
+    dist[0] = 0;
+
+    for (int i = 0; i < n; i++) {
+        int min_dist = INT_MAX;
+        int min_node = -1;
+        for (int j = 0; j < n; j++) {
+            if (!visited[j] && dist[j] < min_dist) {
+                min_dist = dist[j];
+                min_node = j;
+            }
+        }
+
+        if (min_node == -1) {
+            break;
+        }
+
+        visited[min_node] = 1;
+
+        for (int j = 0; j < n; j++) {
+            if (graph[min_node][j] > 0 && !visited[j] && graph[min_node][j] < dist[j]) {
+                parent[j] = min_node;
+                dist[j] = graph[min_node][j];
+            }
+        }
+    }
+
+    printf("Edges in the minimum spanning tree:\n");
+    for (int i = 1; i < n; i++) {
+        printf("%d - %d\n", parent[i], i);
+    }
+}
+
+int main() {
+    int n = 5;  // Number of nodes
+    int graph[MAX_NODES][MAX_NODES] = {
+        {0, 2, 0, 6, 0},
+        {2, 0, 3, 8, 5},
+        {0, 3, 0, 0, 7},
+        {6, 8, 0, 0, 9},
+        {0, 5, 7, 9, 0}
+    };
+    prim(graph, n);
+    return 0;
+}
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_ITEMS 100
+#define MAX_WEIGHT 1000
+
+// Function to find the maximum of two integers
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Function to solve the 0/1 knapsack problem
+int knapsack(int weights[], int values[], int n, int W) {
+    int dp[MAX_ITEMS + 1][MAX_WEIGHT + 1];  // Dynamic programming table
+    
+    // Initialize the table
+    for (int i = 0; i <= n; i++) {
+        for (int w = 0; w <= W; w++) {
+            if (i == 0 || w == 0) {
+                dp[i][w] = 0;
+            } else if (weights[i - 1] <= w) {
+                dp[i][w] = max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+    
+    // Return the maximum value that can be obtained
+    return dp[n][W];
+}
+
+// Example usage
+int main() {
+    int n = 5;           // Number of items
+    int weights[] = {10, 20, 30, 40, 50};  // Weight of each item
+    int values[] = {60, 100, 120, 140, 160};  // Value of each item
+    int W = 100;         // Weight limit
+    int max_value = knapsack(weights, values, n, W);
+    printf("Maximum value that can be obtained is %d\n", max_value);
+    return 0;
+}
+
+
+
+
+
+
+// 
+
+
+
+
+
